@@ -1,0 +1,16 @@
+<video controls></video>
+<script type="module">
+  import { FFmpegClient } from './dist/ffmpeg-client.js';
+  
+  const client = new FFmpegClient({ workerURL: './dist/ffmpeg.worker.js' });
+  await client.load();  // loads WASM in the worker
+  
+  function loadVideo(elem){
+    const mkvBytes = new Uint8Array(await (await fetch(elem.value)).arrayBuffer());
+    const fmp4 = await client.convertFile(mkvBytes);
+    
+    // fmp4 is a Uint8Array of fragmented MP4 bytes
+    const url = URL.createObjectURL(new Blob([fmp4], { type: 'video/mp4' }));
+    document.querySelector('video').src = url;
+  }
+</script>
