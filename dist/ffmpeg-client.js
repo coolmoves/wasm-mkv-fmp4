@@ -54,7 +54,7 @@ export class FFmpegClient {
   /** Spawn worker and wait until WASM is loaded */
   load() {
     return new Promise((resolve, reject) => {
-      this._worker = new Worker(this._workerURL);
+      this._worker = new Worker(this._workerURL,{ type: 'module' });
       this._worker.onmessage = (evt) => this._dispatch(evt.data);
       this._worker.onerror   = (err) => reject(err);
 
