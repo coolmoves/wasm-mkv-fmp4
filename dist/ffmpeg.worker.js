@@ -64,17 +64,12 @@ async function handleInit({ wasmURL, coreURL }) {
     // Load the ESM core script.  We need dynamic import or importScripts.
     // importScripts works in dedicated workers; fallback to fetch+eval for
     // module workers / Node.
-    let createFFmpegCore;
-
-    if (typeof importScripts === 'function') {
-      // Classic dedicated worker
-      importScripts(coreURL || new URL('ffmpeg-core.js', self.location.href).href);
-      createFFmpegCore = self.createFFmpegCore;
-    } else {
-      // Module worker / Node – dynamic import
-      const mod = await import(coreURL || new URL('ffmpeg-core.js', import.meta.url).href);
-      createFFmpegCore = mod.default;
-    }
+    const mod = await import(
+     coreURL || new URL('./ffmpeg-core.js', import.meta.url).href
+   );
+   
+   const createFFmpegCore =
+     mod.default || mod.createFFmpegCore;
 
     Module = await createFFmpegCore({
       // Provide WASM bytes directly so no fetch() is needed
