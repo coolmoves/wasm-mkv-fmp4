@@ -9,7 +9,7 @@
   import { FFmpegClient } from './dist/ffmpeg-client.js';
 
   const client = new FFmpegClient({
-    workerURL: './dist/ffmpeg.worker.js'
+    workerURL: new URL('./dist/ffmpeg.worker.js', import.meta.url).href
   });
 
   await client.load();
@@ -24,11 +24,12 @@
 
     const fmp4 = await client.convertFile(mkvBytes);
 
-    // fmp4 is a Uint8Array of fragmented MP4 bytes
     const url = URL.createObjectURL(
       new Blob([fmp4], { type: 'video/mp4' })
     );
 
     document.querySelector('video').src = url;
   }
+
+  window.loadVideo = loadVideo;
 </script>
