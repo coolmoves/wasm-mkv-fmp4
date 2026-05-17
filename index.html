@@ -1,4 +1,8 @@
 <video controls></video>
+<form onsubmit="loadVideo(this)">
+  <input type="text" name="link">
+  <input type="submit">
+</form>
 <script type="module">
   import { FFmpegClient } from './dist/ffmpeg-client.js';
   
@@ -6,7 +10,7 @@
   await client.load();  // loads WASM in the worker
   
   function loadVideo(elem){
-    const mkvBytes = new Uint8Array(await (await fetch(elem.value)).arrayBuffer());
+    const mkvBytes = new Uint8Array(await (await fetch(elem["link"].value)).arrayBuffer());
     const fmp4 = await client.convertFile(mkvBytes);
     
     // fmp4 is a Uint8Array of fragmented MP4 bytes
